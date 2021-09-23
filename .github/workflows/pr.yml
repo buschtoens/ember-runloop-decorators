@@ -1,0 +1,74 @@
+name: Pull Requests
+
+on:
+  pull_request:
+
+env:
+  CI: true
+
+jobs:
+  test-locked-deps:
+    name: Locked Deps
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@bcad811784fb09d282bb1a9a98dfc18f758fbd9e
+        with:
+          version: 6.14.5
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: pnpm
+      - run: pnpm install --prefer-offline --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm test:ember
+
+  test-old-dependencies:
+    name: Oldest Supported Env
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@bcad811784fb09d282bb1a9a98dfc18f758fbd9e
+        with:
+          version: 6.14.5
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 12
+          cache: pnpm
+      - run: pnpm install --prefer-offline --frozen-lockfile
+      - run: pnpm test:ember
+
+  test-try:
+    runs-on: ubuntu-20.04
+    needs: [test-floating-deps]
+
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario:
+          - ember-lts-3.12
+          - ember-lts-3.16
+          - ember-lts-3.20
+          - ember-lts-3.24
+          #- ember-lts-3.28
+          - ember-release
+          - ember-beta
+          - ember-canary
+          - ember-default-with-jquery
+          - ember-classic
+          - embroider-safe
+          - embroider-optimized
+
+    name: 'ember-try: ${{ matrix.scenario }}'
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@bcad811784fb09d282bb1a9a98dfc18f758fbd9e
+        with:
+          version: 6.14.5
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: pnpm
+      - run: pnpm install --prefer-offline --frozen-lockfile
+      - run: pnpm ember try:one ${{ matrix.scenario }}

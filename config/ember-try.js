@@ -3,10 +3,36 @@
 const getChannelURL = require('ember-source-channel-url');
 const { embroiderSafe, embroiderOptimized } = require('@embroider/test-setup');
 
+try {
+  require('../patches/ember-try');
+} catch {
+  console.warn('Failed to patch `ember-try` for `pnpm` support.');
+}
+
 module.exports = async function () {
   return {
-    useYarn: true,
+    npmOptions: {
+      manager: 'pnpm',
+      args: ['--prefer-offline'],
+    },
+
     scenarios: [
+      {
+        name: 'ember-lts-3.12',
+        npm: {
+          devDependencies: {
+            'ember-source': '~3.12.4',
+          },
+        },
+      },
+      {
+        name: 'ember-lts-3.16',
+        npm: {
+          devDependencies: {
+            'ember-source': '~3.16.10',
+          },
+        },
+      },
       {
         name: 'ember-lts-3.20',
         npm: {
