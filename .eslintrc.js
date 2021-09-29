@@ -2,15 +2,7 @@
 
 module.exports = {
   root: true,
-  parser: '@babel/eslint-parser',
-  parserOptions: {
-    ecmaVersion: 2018,
-    sourceType: 'module',
-    ecmaFeatures: {
-      legacyDecorators: true,
-    },
-    requireConfigFile: false,
-  },
+  parser: '@typescript-eslint/parser',
   plugins: ['ember'],
   extends: [
     'eslint:recommended',
@@ -45,6 +37,14 @@ module.exports = {
       },
       plugins: ['node'],
       extends: ['plugin:node/recommended'],
+    },
+    {
+      files: ['*.ts'],
+      extends: ['plugin:@typescript-eslint/recommended'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/ban-types': 'off',
+      },
     },
     {
       // Test files:

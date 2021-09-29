@@ -192,6 +192,7 @@ export const bind = decoratorWithParams<
     args.length <= 1
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { value, writable, ...descriptor } = desc;
   assert(
     `The '@bind' decorator can only be used on methods.`,
