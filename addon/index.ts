@@ -1,5 +1,16 @@
 import { assert, warn } from '@ember/debug';
-import * as RunLoop from '@ember/runloop';
+import {
+  run as runLoop_run,
+  join as runLoop_join,
+  bind as runLoop_bind,
+  schedule as runLoop_schedule,
+  scheduleOnce as runLoop_scheduleOnce,
+  once as runLoop_once,
+  later as runLoop_later,
+  next as runLoop_next,
+  debounce as runLoop_debounce,
+  throttle as runLoop_throttle,
+} from '@ember/runloop';
 import type { EmberRunQueues, EmberRunTimer } from '@ember/runloop';
 import {
   decoratorWithParams,
@@ -75,7 +86,7 @@ export const inRunLoop = decoratorWithParams(function inRunLoop<
   return {
     ...desc,
     value(this: InstanceType<Target>, ...args: Parameters<Method>) {
-      return RunLoop.run(this, value, ...args);
+      return runLoop_run(this, value, ...args);
     },
   };
 }) as MethodDecorator;
@@ -134,7 +145,7 @@ export const joinRunLoop = decoratorWithParams(function joinRunLoop<
   return {
     ...desc,
     value(this: InstanceType<Target>, ...args: Parameters<Method>) {
-      return RunLoop.join(this, value, ...args);
+      return runLoop_join(this, value, ...args);
     },
   };
 }) as MethodDecorator;
@@ -204,7 +215,7 @@ export const bind = decoratorWithParams<
     get(this: InstanceType<Target>) {
       if (!this[BOUND]) this[BOUND] = {};
       if (!this[BOUND][key])
-        this[BOUND][key] = RunLoop.bind(getContext(this, args), value);
+        this[BOUND][key] = runLoop_bind(getContext(this, args), value);
 
       return this[BOUND][key];
     },
@@ -272,7 +283,7 @@ export const schedule = decoratorWithRequiredParams(function schedule<
   return {
     ...desc,
     value(this: InstanceType<Target>, ...args: Parameters<Method>) {
-      return RunLoop.schedule(queue, this, value, ...args);
+      return runLoop_schedule(queue, this, value, ...args);
     },
   };
 });
@@ -341,7 +352,7 @@ export const scheduleOnce = decoratorWithRequiredParams(function scheduleOnce<
   return {
     ...desc,
     value(this: InstanceType<Target>, ...args: Parameters<Method>) {
-      return RunLoop.scheduleOnce(queue, this, value, ...args);
+      return runLoop_scheduleOnce(queue, this, value, ...args);
     },
   };
 });
@@ -387,7 +398,7 @@ export const once = decoratorWithParams(function once<
   return {
     ...desc,
     value(this: InstanceType<Target>, ...args: Parameters<Method>) {
-      return RunLoop.once(this, value, ...args);
+      return runLoop_once(this, value, ...args);
     },
   };
 });
@@ -442,7 +453,7 @@ export const later = decoratorWithRequiredParams(function later<
   return {
     ...desc,
     value(this: InstanceType<Target>, ...args: Parameters<Method>) {
-      return RunLoop.later(this, value, ...args, wait);
+      return runLoop_later(this, value, ...args, wait);
     },
   };
 });
@@ -493,7 +504,7 @@ export const next = decoratorWithParams(function next<
   return {
     ...desc,
     value(this: InstanceType<Target>, ...args: Parameters<Method>) {
-      return RunLoop.next(this, value, ...args);
+      return runLoop_next(this, value, ...args);
     },
   };
 })();
@@ -554,7 +565,7 @@ export const debounce = decoratorWithRequiredParams(function debounce<
   return {
     ...desc,
     value(this: InstanceType<Target>, ...args: Parameters<Method>) {
-      return RunLoop.debounce(this, value, ...args, wait, immediate);
+      return runLoop_debounce(this, value, ...args, wait, immediate);
     },
   };
 });
@@ -615,7 +626,7 @@ export const throttle = decoratorWithRequiredParams(function throttle<
   return {
     ...desc,
     value(this: InstanceType<Target>, ...args: Parameters<Method>) {
-      return RunLoop.throttle(this, value, ...args, spacing, immediate);
+      return runLoop_throttle(this, value, ...args, spacing, immediate);
     },
   };
 });
