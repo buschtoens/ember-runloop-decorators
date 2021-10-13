@@ -15,7 +15,9 @@
 /.eslintignore
 /.eslintrc.js
 /.git/
+/.github/
 /.gitignore
+/.pnpm-debug.log
 /.prettierignore
 /.prettierrc.js
 /.template-lintrc.js
@@ -25,6 +27,7 @@
 /config/ember-try.js
 /CONTRIBUTING.md
 /ember-cli-build.js
+/pnpm-lock.yaml
 /testem.js
 /tests/
 /yarn-error.log
